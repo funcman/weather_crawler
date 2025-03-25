@@ -1,0 +1,9 @@
+data/openweathermap_data.csv
+data/weatherapi_data.csv
+data/visualcrossing_data.csv
+weather_crawler.log
+# 不要忽略.env文件，但会在提交时由过滤器清理
+# 忽略备份文件和临时文件
+*.bak
+*.tmp
+*~

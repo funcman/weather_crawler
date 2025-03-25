@@ -1,0 +1,3 @@
+# 对.env文件应用清理过滤器
+.env filter=clean-env
+.env text eol=lf 

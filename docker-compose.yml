@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 单次运行模式 - 运行一次爬虫后退出
+  weather-crawler:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: weather-crawler-once
+    volumes:
+      - ./data:/app/data
+    command: once
+    environment:
+      - TZ=Asia/Shanghai
+      - PYTHONUNBUFFERED=1
+      - PYTHONFAULTHANDLER=1
+    networks:
+      - weather-network
+
+  # 定时运行模式 - 每小时运行一次爬虫
+  weather-crawler-cron:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: weather-crawler-cron
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    command: cron
+    environment:
+      - TZ=Asia/Shanghai
+      - PYTHONUNBUFFERED=1
+      - PYTHONFAULTHANDLER=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "test", "-f", "/app/cron.log"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - weather-network
+
+networks:
+  weather-network:
+    driver: bridge 
