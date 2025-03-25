@@ -55,7 +55,7 @@ pip install -r requirements.txt
 
 1. 克隆或下载此仓库
 2. 编辑`.env`文件，设置API密钥
-3. 使用Docker Compose构建和运行容器
+3. 使用Docker构建和运行容器（详见下方Docker运行说明）
 
 ## 配置
 
@@ -93,9 +93,11 @@ python weather_crawler.py
 
 ### Docker运行
 
+#### 使用Docker Compose
+
 项目提供了两种Docker运行模式：
 
-#### 1. 单次运行模式
+##### 1. 单次运行模式
 
 运行一次爬虫后退出容器：
 
@@ -103,7 +105,7 @@ python weather_crawler.py
 docker-compose run --rm weather-crawler
 ```
 
-#### 2. 定时任务模式
+##### 2. 定时任务模式
 
 以后台守护进程方式运行，每小时自动执行一次爬虫：
 
@@ -119,6 +121,87 @@ docker logs weather-crawler-cron
 停止定时任务：
 ```bash
 docker-compose down
+```
+
+#### 直接使用Docker命令
+
+如果您不想使用docker-compose，也可以直接使用docker命令：
+
+##### 1. 构建Docker镜像
+
+```bash
+# 构建单次运行模式的镜像
+docker build -t weather-crawler:latest .
+```
+
+##### 2. 单次运行模式
+
+```bash
+# 运行一次爬虫后退出
+docker run --rm \
+  -v $(pwd)/data:/app/data \
+  -e TZ=Asia/Shanghai \
+  -e PYTHONUNBUFFERED=1 \
+  -e PYTHONFAULTHANDLER=1 \
+  weather-crawler:latest once
+```
+
+Windows PowerShell中使用:
+```powershell
+docker run --rm `
+  -v ${PWD}/data:/app/data `
+  -e TZ=Asia/Shanghai `
+  -e PYTHONUNBUFFERED=1 `
+  -e PYTHONFAULTHANDLER=1 `
+  weather-crawler:latest once
+```
+
+##### 3. 定时任务模式
+
+```bash
+# 以后台守护进程方式运行，每小时自动执行一次爬虫
+docker run -d \
+  --name weather-crawler-cron \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/logs:/app/logs \
+  -e TZ=Asia/Shanghai \
+  -e PYTHONUNBUFFERED=1 \
+  -e PYTHONFAULTHANDLER=1 \
+  --restart unless-stopped \
+  weather-crawler:latest cron
+```
+
+Windows PowerShell中使用:
+```powershell
+docker run -d `
+  --name weather-crawler-cron `
+  -v ${PWD}/data:/app/data `
+  -v ${PWD}/logs:/app/logs `
+  -e TZ=Asia/Shanghai `
+  -e PYTHONUNBUFFERED=1 `
+  -e PYTHONFAULTHANDLER=1 `
+  --restart unless-stopped `
+  weather-crawler:latest cron
+```
+
+##### 4. 查看日志
+
+```bash
+# 查看容器日志
+docker logs weather-crawler-cron
+
+# 持续跟踪日志
+docker logs -f weather-crawler-cron
+```
+
+##### 5. 停止和移除容器
+
+```bash
+# 停止容器
+docker stop weather-crawler-cron
+
+# 移除容器
+docker rm weather-crawler-cron
 ```
 
 ## 自动定时运行

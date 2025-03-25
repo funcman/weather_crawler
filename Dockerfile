@@ -39,6 +39,7 @@ RUN pip list
 COPY weather_crawler.py .
 COPY openweathermap_api.py .
 COPY weatherapi_api.py .
+COPY visualcrossing_api.py .
 COPY .env .
 COPY README.md .
 COPY test_python310.py .
