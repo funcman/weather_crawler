@@ -7,6 +7,7 @@
 - `weather_crawler.py` - 主程序，调用各API模块获取天气数据
 - `openweathermap_api.py` - OpenWeatherMap API模块
 - `weatherapi_api.py` - WeatherAPI.com API模块
+- `visualcrossing_api.py` - Visual Crossing Weather API模块
 - `data/` - 存放CSV数据文件的目录
 - `requirements.txt` - 项目依赖
 - `Dockerfile` - Docker镜像构建文件
@@ -31,6 +32,7 @@
 - 将数据保存为CSV格式，方便后续分析
 - 自动记录日志，便于监控和调试
 - 支持Docker容器化部署，包括单次运行和定时任务模式
+- 利用Python 3.10+特性，包括类型注解和结构模式匹配
 
 ## 安装步骤
 
@@ -46,6 +48,7 @@ pip install -r requirements.txt
 3. 获取API密钥：
    - OpenWeatherMap: [https://openweathermap.org/api](https://openweathermap.org/api)
    - WeatherAPI: [https://www.weatherapi.com/](https://www.weatherapi.com/)
+   - Visual Crossing Weather: [https://www.visualcrossing.com/](https://www.visualcrossing.com/)
 4. 将获取的API密钥添加到`.env`文件中
 
 ### Docker安装
@@ -64,6 +67,9 @@ API_KEY=your_openweathermap_key_here
 
 # WeatherAPI.com API密钥
 WEATHERAPI_KEY=your_weatherapi_key_here
+
+# Visual Crossing Weather API密钥
+VISUALCROSSING_KEY=your_visualcrossing_key_here
 
 # 城市名称（默认为北京）
 CITY=Beijing
@@ -137,6 +143,7 @@ docker-compose down
 
 - `data/openweathermap_data.csv` - 存储OpenWeatherMap数据
 - `data/weatherapi_data.csv` - 存储WeatherAPI数据
+- `data/visualcrossing_data.csv` - 存储Visual Crossing Weather数据
 
 每次运行时，程序会向这些文件追加新的数据行。如果文件不存在，程序会创建新文件并添加表头。
 
@@ -144,17 +151,23 @@ docker-compose down
 
 CSV文件包含以下字段：
 
+基本字段（所有API共有）：
 - `timestamp`: 数据抓取时间戳
 - `temperature`: 当前温度（摄氏度）
 - `feels_like`: 体感温度（摄氏度）
 - `humidity`: 湿度百分比
 - `pressure`: 大气压力（百帕）
 - `weather_condition`: 天气状况（英文）
-- `weather_description`: 天气状况详细描述（英文）
+- `weather_description`: 天气状况详细描述
 - `wind_speed`: 风速（米/秒）
 - `city`: 城市名称
 - `country`: 国家代码
 - `data_source`: 数据来源
+
+Visual Crossing Weather API附加字段：
+- `precipitation`: 降水量（毫米）
+- `uv_index`: 紫外线指数
+- `cloud_cover`: 云量百分比
 
 ## 扩展新的API
 
@@ -170,4 +183,5 @@ CSV文件包含以下字段：
 
 - 免费API有调用频率限制，请勿过于频繁地调用
 - API密钥请妥善保管，不要公开分享
-- 使用Docker运行时，数据文件将保存在宿主机的`./data`目录中 
+- 使用Docker运行时，数据文件将保存在宿主机的`./data`目录中
+- 本项目要求Python 3.10或更高版本，利用了结构模式匹配等新特性 

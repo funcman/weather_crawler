@@ -7,3 +7,15 @@ weather_crawler.log
 *.bak
 *.tmp
 *~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+.env.bak
